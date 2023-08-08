@@ -17,6 +17,6 @@ describe("AiPlayer class", () => {
     const ai = new AiPlayer();
     human.setEnemy(ai)
     ai.setEnemy(human)
-    expect(ai.placeShips()).toBe(true)
+    expect(ai.placeShipsRandomly()).toBe(true)
   })
 });

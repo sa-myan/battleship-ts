@@ -2,7 +2,7 @@ import Ship from "./Ship";
 
 type Cell = { hit: boolean; ship: Ship | null };
 
-type Ships = {
+export type Ships = {
   carrier: Ship;
   battleship: Ship;
   destroyer: Ship;
