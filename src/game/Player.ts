@@ -2,46 +2,61 @@ import GameBoard from "./GameBoard";
 
 export class Player {
   #name: string;
-  #enemyBoard: GameBoard;
+  #board = new GameBoard()
+  #Enemy: Player | null = null;
+  static #playerCounter = 1
 
-  constructor(name: string, enemyBoard: GameBoard) {
+  constructor(name: string = `Player #${Player.#playerCounter}`) {
     this.#name = name;
-    this.#enemyBoard = enemyBoard;
   }
 
   getName() {
     return this.#name;
   }
 
-  getEnemyBoard(){
-    return this.#enemyBoard
+  getBoard(){
+    return this.#board
+  }
+
+  setEnemy(opponent: Player){
+    this.#Enemy = opponent
+  }
+
+  getEnemy(){
+    return this.#Enemy
   }
 
   attack(x?: number, y?: number) {
+    if (!this.#Enemy){
+      return false
+    }
     if (x !== undefined && y !== undefined){
       if (x < 1 || x > 10 || y < 1 || y > 10) {
         return false;
       }
-      return this.#enemyBoard.receiveAttack(x, y);
+      return this.getEnemy()!.getBoard().receiveAttack(x, y);
     }
     return false
   }
 }
 
 export class AiPlayer extends Player {
-  static #counter = 1;
+  static #aiCounter = 1;
 
-  constructor(enemyBoard: GameBoard) {
-    super(`AI #${AiPlayer.#counter}`, enemyBoard);
-    AiPlayer.#counter++
+  constructor() {
+    super(`AI #${AiPlayer.#aiCounter}`);
+    AiPlayer.#aiCounter++
   }
 
   override attack(){
+    if (!this.getEnemy()){
+      return false
+    }
     const validMoves: [number, number][] = []
 
     for (let i = 1; i <= 10; i++){
       for (let j = 1; j <= 10; j++){
-        if (!this.getEnemyBoard().getBoard(i,j).hit){
+        if (!this.getEnemy()!.getBoard().getBoard(i,j).hit){
           validMoves.push([i, j])
         }
       }
@@ -53,8 +68,12 @@ export class AiPlayer extends Player {
 
     const randomNumber = Math.floor(Math.random() * validMoves.length)
     const randomCell = validMoves[randomNumber]
-    this.getEnemyBoard().receiveAttack(randomCell[0], randomCell[1])
+    this.getEnemy()!.getBoard().receiveAttack(randomCell[0], randomCell[1])
     return true
+  }
+
+  placeShips(){
+
   }
   
 }
