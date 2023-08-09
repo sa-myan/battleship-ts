@@ -1,4 +1,5 @@
 import GameBoard, { Ships } from "./GameBoard";
+import Ship from "./Ship";
 
 export class Player {
   #name: string;
@@ -52,6 +53,28 @@ export class Player {
           randomDir()
         );
       } while (!check);
+    }
+    return true;
+  }
+
+  placeShips(
+    startPostions: { ship: Ship; start: [number, number]; dir: "x" | "y" }[]
+  ) {
+    if (startPostions.length !== 5) {
+      return false;
+    }
+
+    for (let cell of startPostions) {
+      if (
+        !this.getBoard().placeShip(
+          cell.ship,
+          cell.start[0],
+          cell.start[1],
+          cell.dir
+        )
+      ) {
+        return false;
+      }
     }
     return true;
   }
