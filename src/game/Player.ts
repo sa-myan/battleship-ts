@@ -1,6 +1,8 @@
 import GameBoard, { Ships } from "./GameBoard";
 import Ship from "./Ship";
 
+export type ShipPosition = { ship: Ship; start: [number, number]; dir: "x" | "y" }
+
 export class Player {
   #name: string;
   #board = new GameBoard();
@@ -58,7 +60,7 @@ export class Player {
   }
 
   placeShips(
-    startPostions: { ship: Ship; start: [number, number]; dir: "x" | "y" }[]
+    startPostions: ShipPosition[]
   ) {
     if (startPostions.length !== 5) {
       return false;
