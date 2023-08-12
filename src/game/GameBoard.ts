@@ -1,6 +1,6 @@
 import Ship from "./Ship";
 
-type Cell = { hit: boolean; ship: Ship | null };
+export type Cell = { hit: boolean; ship: Ship | null };
 
 export type Ships = {
   carrier: Ship;

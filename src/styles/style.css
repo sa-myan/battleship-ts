@@ -1,0 +1,14 @@
+.board{
+    display: grid;
+    grid-template-columns: repeat(10, 25px);
+    grid-template-rows: repeat(10, 25px);
+    border: solid red;
+}
+
+.cell{
+    border: solid black
+}
+
+.ship{
+    background-color: red;
+}
