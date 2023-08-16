@@ -1,12 +1,9 @@
-import { AiPlayer, Player, ShipPosition } from "./Player";
+import { AiPlayer, Player } from "./Player";
 
 export default class Game {
   readonly p1 = new Player();
   readonly p2 = new AiPlayer();
-
-  placeP1Ships(obj: ShipPosition[]) {
-    return this.p1.placeShips(obj);
-  }
+  turn = 0
 
   placeP2Ships() {
     return this.p2.placeShipsRandomly();

@@ -10,5 +10,13 @@
 }
 
 .ship{
+    background-color: blue;
+}
+
+.hit{
     background-color: red;
+}
+
+.hit .ship{
+    background-color: blueviolet;
 }

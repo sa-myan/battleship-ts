@@ -46,12 +46,17 @@ export default class GameBoard {
     }
   }
 
+  // returns true when successfully placed or is already placed
+  // returns false for invalid placement attempts
   placeShip(ship: Ship, x: number, y: number, direction: "x" | "y") {
     if (x < 1 || x > 10 || y < 1 || y > 10) {
       return false;
     }
+    if (ship.isPlaced){
+      return true
+    }
     if (direction === "x") {
-      if (x + ship.getLength() > 10) {
+      if (x - 1 + ship.getLength() > 10) {
         return false;
       }
       // testing for overlaps
@@ -66,7 +71,7 @@ export default class GameBoard {
       }
     }
     if (direction === "y") {
-      if (y + ship.getLength() > 10) {
+      if (y - 1 + ship.getLength() > 10) {
         return false;
       }
       // testing for overlaps
@@ -80,6 +85,7 @@ export default class GameBoard {
         this.getBoard(x, i).ship = ship;
       }
     }
+    ship.isPlaced = true
     return true;
   }
 

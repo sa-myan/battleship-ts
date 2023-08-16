@@ -1,9 +1,8 @@
-import { useState, useEffect, useRef, Dispatch, SetStateAction } from "react";
-import { Player, ShipPosition } from "../game/Player";
+import { useState, useEffect, Dispatch, SetStateAction } from "react";
+import { Player } from "../game/Player";
 import { Ships } from "../game/GameBoard";
-import Ship from "../game/Ship";
 
-interface CellProps  {
+interface CellProps {
   x: number;
   y: number;
   player: Player;
@@ -11,9 +10,10 @@ interface CellProps  {
   isPlayerTurn: boolean;
   setIsPlayerTurn: Dispatch<SetStateAction<boolean>>;
   setPromptText: Dispatch<SetStateAction<string>>;
-  isGameReady: boolean;
-  setIsGameReady: Dispatch<SetStateAction<boolean>>;
-  placementOrientation: "x" | "y";
+  gameStage: "start" | "playing" | "end";
+  setGameStage: Dispatch<SetStateAction<"start" | "playing" | "end">>;
+  shipDirection: "x" | "y";
+  update: Dispatch<SetStateAction<number>>;
 }
 
 function Cell({
@@ -24,101 +24,43 @@ function Cell({
   isPlayerTurn,
   setIsPlayerTurn,
   setPromptText,
-  isGameReady,
-  setIsGameReady,
-  placementOrientation,
+  gameStage,
+  setGameStage,
+  shipDirection,
+  update,
 }: CellProps) {
-  const [cssClassName, setCssClassName] = useState(className());
-  
-
-  function createShipList(player: Player) {
-    const list: Ship[] = [];
-    for (let ship in player.getBoard().getShips()) {
-      list.push(player.getBoard().getShips()[ship as keyof Ships]);
-    }
-    return list;
-  }
-
-  const placedShipList = useRef([] as ShipPosition[]);
-
-  const [shipList, setShipList] = useState(createShipList(player))
-
-  function className() {
+  function createClassName() {
     let cn = "cell ";
-    if (self) {
-      cn += "self ";
-      if (player.getBoard().getBoard(x, y).ship) {
-        cn += "ship ";
-      }
-    } else {
-      cn += "enemy ";
-    }
-    if (player.getBoard().getBoard(x, y).hit) {
-      cn += "hit ";
-      if (player.getBoard().getBoard(x, y).ship) {
-        cn += "ship ";
-      }
-    } else {
-      cn += "no-hit ";
+    if (self && player.getBoard().getBoard(x, y).ship) {
+      cn += "ship ";
     }
     return cn;
   }
 
   function handleClick() {
-    switch (isGameReady) {
-      case true:
-        if (self || !isPlayerTurn) {
-          return;
-        }
-        const outcome = player.attack(x, y);
-        if (outcome) {
-          setCssClassName(className());
-          setIsPlayerTurn(false);
-        }
-        break;
-      case false:
-        if (!self) {
-          return;
-        }
-        if (shipList.length > 0) {
-          const currentShip = shipList[0];
-          setShipList([...shipList].slice(1))
-          placedShipList.current.push({
-            ship: currentShip as Ship,
-            start: [x, y],
-            dir: placementOrientation,
-          });
-        }
+    if (!self) {
+      return;
+    }
+    switch (gameStage) {
+      case "start":
+        let ship = player.placeNext();
+          player.getBoard().placeShip(ship!, x, y, shipDirection);
+          if (player.placeNext()) {
+            setPromptText(
+              `place your ${player.placeNext()!.getName()} ${
+                shipDirection == "x" ? "horizontal" : "vertical"
+              }ly`
+            );
+          }
+          else {
+            setGameStage("playing");
+            setPromptText("Attack now!");
+          }
+        update(Math.random());
     }
   }
 
-  useEffect(() => {
-    switch (isGameReady) {
-      case true:
-        setPromptText(`${player.getName()}'s turn`);
-        if (!self && !isPlayerTurn) {
-          player.attack();
-          setIsPlayerTurn(true);
-        }
-        break;
-      case false:
-        setPromptText(
-          `Place your ${shipList[0].getName()} ${
-            placementOrientation == "x" ? "horizontally" : "vertically"
-          }!`
-        );
-        if (shipList.length == 0) {
-          if (self) {
-            player.placeShips(placedShipList.current);
-          } else {
-            player.placeShipsRandomly();
-          }
-          setIsGameReady(true);
-        }
-    }
-  });
-
-  return <div onClick={handleClick} className={cssClassName}></div>;
+  return <div className={createClassName()} onClick={handleClick}></div>;
 }
 
 export default Cell;

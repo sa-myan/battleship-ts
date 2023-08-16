@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Player } from "../game/Player";
 import Cell from "./Cell";
 
@@ -8,9 +8,10 @@ interface BoardProps {
   isPlayerTurn: boolean;
   setIsPlayerTurn: Dispatch<SetStateAction<boolean>>;
   setPromptText: Dispatch<SetStateAction<string>>;
-  isGameReady: boolean;
-  setIsGameReady: Dispatch<SetStateAction<boolean>>;
-  placementOrientation: "x" | "y";
+  gameStage: 'start' | 'playing' | 'end';
+  setGameStage: Dispatch<SetStateAction<'start' | 'playing' | 'end'>>;
+  shipDirection: "x" | "y";
+  update: Dispatch<SetStateAction<number>>
 }
 
 function Board({
@@ -19,12 +20,46 @@ function Board({
   isPlayerTurn,
   setIsPlayerTurn,
   setPromptText,
-  isGameReady,
-  setIsGameReady,
-  placementOrientation,
+  gameStage,
+  setGameStage,
+  shipDirection,
+  update,
 }: BoardProps) {
+
+  // place enemy ships
+  useEffect(() => {
+    switch (gameStage){
+      case 'start':
+        if (!self){
+          player.placeShipsRandomly();
+          update(Math.random())
+        }
+        break;
+    }
+  }, []);
+
+  // prompt for ship placement
+  useEffect(() => {
+    switch (gameStage){
+      case 'start':
+        if (self){
+          setPromptText(`place your ${player.placeNext()!.getName()} ${shipDirection === 'x'? 'horizontal': 'vertical'}ly`)
+          update(Math.random())
+        }
+        break;
+    }
+  }, [shipDirection]);
+
+    useEffect(() => {
+    if (gameStage == "playing" && !self && !isPlayerTurn) {
+      player.attack();
+      setIsPlayerTurn(true);
+    }
+  }, [isPlayerTurn]);
+
+
   return (
-    <div className="board">
+    <div className="board" >
       {player
         .getBoard()
         .getBoard()
@@ -33,16 +68,19 @@ function Board({
             return (
               <Cell
                 key={x.toString() + y.toString()}
-                x={x + 1}
-                y={y + 1}
+                // workaround until proper fix -_-
+                // oversight 
+                x={y + 1}
+                y={x +1}
                 player={player}
                 self={self}
                 isPlayerTurn={isPlayerTurn}
                 setIsPlayerTurn={setIsPlayerTurn}
                 setPromptText={setPromptText}
-                isGameReady={isGameReady}
-                setIsGameReady={setIsGameReady}
-                placementOrientation={placementOrientation}
+                gameStage={gameStage}
+                setGameStage={setGameStage}
+                shipDirection={shipDirection}
+                update={update}
               />
             );
           });

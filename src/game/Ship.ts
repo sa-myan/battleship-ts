@@ -2,6 +2,7 @@ export default class Ship{
     #name
     #length
     #hits = 0
+    isPlaced = false
     constructor(length: number, name: string){
         if (length < 1){
             throw new Error("Invalid length")

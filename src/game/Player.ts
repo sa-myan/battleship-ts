@@ -59,27 +59,15 @@ export class Player {
     return true;
   }
 
-  placeShips(
-    startPostions: ShipPosition[]
-  ) {
-    if (startPostions.length !== 5) {
-      return false;
-    }
-
-    for (let cell of startPostions) {
-      if (
-        !this.getBoard().placeShip(
-          cell.ship,
-          cell.start[0],
-          cell.start[1],
-          cell.dir
-        )
-      ) {
-        return false;
+  placeNext(){
+    for (let ship in this.#board.getShips()){
+      if (!this.#board.getShips()[ship as keyof Ships].isPlaced){
+        return this.#board.getShips()[ship as keyof Ships]
       }
     }
-    return true;
+    return null
   }
+
 }
 
 export class AiPlayer extends Player {

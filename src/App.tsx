@@ -9,20 +9,21 @@ const game = new Game();
 function App() {
   const [isPlayerTurn, setIsPlayerTurn] = useState(true);
   const [promptText, setPromptText] = useState("Prepare for battle");
-  const [isGameReady, setIsGameReady] = useState(false);
-  const [placementOrientation, setPlacementOrientation] = useState(
+  const [gameStage, setGameStage] = useState('start' as 'start' | 'playing' | 'end');
+  const [shipDirection, setshipDirection] = useState(
     "x" as "x" | "y"
   );
+  const [_, update] = useState(0)
 
   function handleRotateButtonClick() {
-    placementOrientation == "x"
-      ? setPlacementOrientation("y")
-      : setPlacementOrientation("x");
+    shipDirection == "x"
+      ? setshipDirection("y")
+      : setshipDirection("x");
   }
 
   return (
     <>
-      {isGameReady ? null : (
+      {gameStage !== 'start' ? null : (
         <button onClick={handleRotateButtonClick}>Rotate</button>
       )}
       <Prompt promptText={promptText} setPromptText={setPromptText} />
@@ -32,9 +33,10 @@ function App() {
         isPlayerTurn={isPlayerTurn}
         setIsPlayerTurn={setIsPlayerTurn}
         setPromptText={setPromptText}
-        isGameReady={isGameReady}
-        setIsGameReady={setIsGameReady}
-        placementOrientation={placementOrientation}
+        gameStage={gameStage}
+        setGameStage={setGameStage}
+        shipDirection={shipDirection}
+        update={update}
       />
       <Board
         self={true}
@@ -42,9 +44,10 @@ function App() {
         isPlayerTurn={isPlayerTurn}
         setIsPlayerTurn={setIsPlayerTurn}
         setPromptText={setPromptText}
-        isGameReady={isGameReady}
-        setIsGameReady={setIsGameReady}
-        placementOrientation={placementOrientation}
+        gameStage={gameStage}
+        setGameStage={setGameStage}
+        shipDirection={shipDirection}
+        update={update}
       />
     </>
   );
