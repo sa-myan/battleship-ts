@@ -1,6 +1,5 @@
 import { useState, useLayoutEffect, Dispatch, SetStateAction } from "react";
 import { Player } from "../game/Player";
-import { Ships } from "../game/GameBoard";
 
 interface CellProps {
   x: number;
@@ -27,22 +26,43 @@ function Cell({
   setGameStage,
   shipDirection,
 }: CellProps) {
-
-  const [cellClass, setCellClass] = useState('')
+  const [cellClass, setCellClass] = useState("");
 
   useLayoutEffect(() => {
-    const thisCell = player.getBoard().getBoard(x,y)
-    // setCellClass(`cell ${thisCell.hit? 'hit':''} ${thisCell.ship? (self? 'ship': (thisCell.hit? 'ship': '') ): ''}`)
-    // cheat code for debug
-    setCellClass(`cell ${thisCell.hit? 'hit':''} ${thisCell.ship? (self? 'ship': (true? 'ship': '') ): ''}`)
-
-  })
+    const thisCell = player.getBoard().getBoard(x, y);
+    setCellClass(
+      (() => {
+        let cn = "cell ";
+        if (thisCell.hit) {
+          cn += "hit ";
+        }
+        if (thisCell.ship?.isSunk()) {
+          cn += "sunk ";
+        }
+        if (thisCell.ship) {
+          if (self) {
+            cn += "ship";
+          } else if (thisCell.hit) {
+            cn += "ship";
+          }
+        }
+        return cn;
+      })()
+    );
+  });
 
   function handleClick() {
     if (!self) {
-      return
-    }
-    else{
+      switch (gameStage) {
+        case "playing":
+          if (!isPlayerTurn) {
+            return;
+          }
+          if (player.getEnemy()!.attack(x, y)) {
+            setIsPlayerTurn(false);
+          }
+      }
+    } else {
       switch (gameStage) {
         case "start":
           let ship = player.placeNext();

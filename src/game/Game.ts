@@ -14,11 +14,11 @@ export default class Game {
     const p2Lost = this.p2.getBoard().areAllSunk();
 
     if (p1Lost && p2Lost) {
-      return "tie";
+      return "It's a tie!!!!";
     } else if (p1Lost) {
-      return "p2";
+      return "Enemy Wins!";
     } else if (p2Lost) {
-      return "p1";
+      return "Player Wins!";
     } else {
       return null;
     }

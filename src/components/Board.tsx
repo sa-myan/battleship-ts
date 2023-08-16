@@ -11,7 +11,6 @@ interface BoardProps {
   gameStage: "start" | "playing" | "end";
   setGameStage: Dispatch<SetStateAction<"start" | "playing" | "end">>;
   shipDirection: "x" | "y";
-  update: Dispatch<SetStateAction<number>>;
 }
 
 function Board({
@@ -23,7 +22,6 @@ function Board({
   gameStage,
   setGameStage,
   shipDirection,
-  update,
 }: BoardProps) {
   // place enemy ships
   useEffect(() => {
@@ -50,8 +48,7 @@ function Board({
   useEffect(() => {
     if (gameStage == "playing" && !self && !isPlayerTurn) {
       player.attack();
-      setIsPlayerTurn(() => true);
-      update(Math.random());
+      setIsPlayerTurn(true);
     }
   }, [isPlayerTurn]);
 
