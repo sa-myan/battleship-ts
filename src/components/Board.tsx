@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { Player } from "../game/Player";
 import Cell from "./Cell";
 
@@ -53,10 +53,10 @@ function Board({
     useEffect(() => {
     if (gameStage == "playing" && !self && !isPlayerTurn) {
       player.attack();
-      setIsPlayerTurn(true);
+      setIsPlayerTurn(() => true);
+      update(Math.random())
     }
   }, [isPlayerTurn]);
-
 
   return (
     <div className="board" >

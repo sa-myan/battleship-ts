@@ -23,4 +23,9 @@ export default class Game {
       return null;
     }
   }
+
+  constructor(){
+    this.p1.setEnemy(this.p2)
+    this.p2.setEnemy(this.p1)
+  }
 }

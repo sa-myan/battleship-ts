@@ -29,21 +29,15 @@ function Cell({
   shipDirection,
   update,
 }: CellProps) {
-  function createClassName() {
-    let cn = "cell ";
-    if (self && player.getBoard().getBoard(x, y).ship) {
-      cn += "ship ";
-    }
-    return cn;
-  }
 
   function handleClick() {
     if (!self) {
-      return;
+      return
     }
-    switch (gameStage) {
-      case "start":
-        let ship = player.placeNext();
+    else{
+      switch (gameStage) {
+        case "start":
+          let ship = player.placeNext();
           player.getBoard().placeShip(ship!, x, y, shipDirection);
           if (player.placeNext()) {
             setPromptText(
@@ -51,16 +45,18 @@ function Cell({
                 shipDirection == "x" ? "horizontal" : "vertical"
               }ly`
             );
-          }
-          else {
+          } else {
             setGameStage("playing");
             setPromptText("Attack now!");
           }
+          break;
+      }
     }
     update(Math.random());
   }
 
-  return <div className={createClassName()} onClick={handleClick}></div>;
+  const thisCell = player.getBoard().getBoard(x,y)
+  return <div className={`cell ${thisCell.hit? 'hit':''} ${thisCell.ship? (self? 'ship': (thisCell.hit? 'ship': '') ): ''}`} onClick={handleClick}></div>;
 }
 
 export default Cell;
