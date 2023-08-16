@@ -1,4 +1,4 @@
-import { useState, useEffect, Dispatch, SetStateAction } from "react";
+import { useState, useLayoutEffect, Dispatch, SetStateAction } from "react";
 import { Player } from "../game/Player";
 import { Ships } from "../game/GameBoard";
 
@@ -13,7 +13,6 @@ interface CellProps {
   gameStage: "start" | "playing" | "end";
   setGameStage: Dispatch<SetStateAction<"start" | "playing" | "end">>;
   shipDirection: "x" | "y";
-  update: Dispatch<SetStateAction<number>>;
 }
 
 function Cell({
@@ -27,8 +26,17 @@ function Cell({
   gameStage,
   setGameStage,
   shipDirection,
-  update,
 }: CellProps) {
+
+  const [cellClass, setCellClass] = useState('')
+
+  useLayoutEffect(() => {
+    const thisCell = player.getBoard().getBoard(x,y)
+    // setCellClass(`cell ${thisCell.hit? 'hit':''} ${thisCell.ship? (self? 'ship': (thisCell.hit? 'ship': '') ): ''}`)
+    // cheat code for debug
+    setCellClass(`cell ${thisCell.hit? 'hit':''} ${thisCell.ship? (self? 'ship': (true? 'ship': '') ): ''}`)
+
+  })
 
   function handleClick() {
     if (!self) {
@@ -52,11 +60,9 @@ function Cell({
           break;
       }
     }
-    update(Math.random());
   }
 
-  const thisCell = player.getBoard().getBoard(x,y)
-  return <div className={`cell ${thisCell.hit? 'hit':''} ${thisCell.ship? (self? 'ship': (thisCell.hit? 'ship': '') ): ''}`} onClick={handleClick}></div>;
+  return <div className={cellClass} onClick={handleClick}></div>;
 }
 
 export default Cell;

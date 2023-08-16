@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect, useLayoutEffect } from "react";
 import { Player } from "../game/Player";
 import Cell from "./Cell";
 
@@ -8,10 +8,10 @@ interface BoardProps {
   isPlayerTurn: boolean;
   setIsPlayerTurn: Dispatch<SetStateAction<boolean>>;
   setPromptText: Dispatch<SetStateAction<string>>;
-  gameStage: 'start' | 'playing' | 'end';
-  setGameStage: Dispatch<SetStateAction<'start' | 'playing' | 'end'>>;
+  gameStage: "start" | "playing" | "end";
+  setGameStage: Dispatch<SetStateAction<"start" | "playing" | "end">>;
   shipDirection: "x" | "y";
-  update: Dispatch<SetStateAction<number>>
+  update: Dispatch<SetStateAction<number>>;
 }
 
 function Board({
@@ -25,41 +25,38 @@ function Board({
   shipDirection,
   update,
 }: BoardProps) {
-
   // place enemy ships
   useEffect(() => {
-    switch (gameStage){
-      case 'start':
-        if (!self){
-          player.placeShipsRandomly();
-          update(Math.random())
-        }
-        break;
+    if (!self) {
+      player.placeShipsRandomly();
     }
   }, []);
 
   // prompt for ship placement
-  useEffect(() => {
-    switch (gameStage){
-      case 'start':
-        if (self){
-          setPromptText(`place your ${player.placeNext()!.getName()} ${shipDirection === 'x'? 'horizontal': 'vertical'}ly`)
-          update(Math.random())
+  useLayoutEffect(() => {
+    switch (gameStage) {
+      case "start":
+        if (self) {
+          setPromptText(
+            `place your ${player.placeNext()!.getName()} ${
+              shipDirection === "x" ? "horizontal" : "vertical"
+            }ly`
+          );
         }
         break;
     }
   }, [shipDirection]);
 
-    useEffect(() => {
+  useEffect(() => {
     if (gameStage == "playing" && !self && !isPlayerTurn) {
       player.attack();
       setIsPlayerTurn(() => true);
-      update(Math.random())
+      update(Math.random());
     }
   }, [isPlayerTurn]);
 
   return (
-    <div className="board" >
+    <div className="board">
       {player
         .getBoard()
         .getBoard()
@@ -69,9 +66,9 @@ function Board({
               <Cell
                 key={x.toString() + y.toString()}
                 // workaround until proper fix -_-
-                // oversight 
+                // oversight
                 x={y + 1}
-                y={x +1}
+                y={x + 1}
                 player={player}
                 self={self}
                 isPlayerTurn={isPlayerTurn}
@@ -80,7 +77,6 @@ function Board({
                 gameStage={gameStage}
                 setGameStage={setGameStage}
                 shipDirection={shipDirection}
-                update={update}
               />
             );
           });
