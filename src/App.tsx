@@ -27,6 +27,7 @@ function App() {
         <button onClick={handleRotateButtonClick}>Rotate</button>
       )}
       <Prompt promptText={promptText} setPromptText={setPromptText} />
+      {gameStage === 'start' ? null : (
       <Board
         self={false}
         player={game.p2}
@@ -38,6 +39,7 @@ function App() {
         shipDirection={shipDirection}
         update={update}
       />
+      )}
       <Board
         self={true}
         player={game.p1}

@@ -56,8 +56,8 @@ function Cell({
             setGameStage("playing");
             setPromptText("Attack now!");
           }
-        update(Math.random());
     }
+    update(Math.random());
   }
 
   return <div className={createClassName()} onClick={handleClick}></div>;
