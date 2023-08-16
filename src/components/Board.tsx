@@ -53,6 +53,8 @@ function Board({
   }, [isPlayerTurn]);
 
   return (
+    <div className="board-container">
+        <h2>{player.getName()}'s board</h2>
     <div className="board">
       {player
         .getBoard()
@@ -79,6 +81,8 @@ function Board({
           });
         })}
     </div>
+    </div>
+
   );
 }
 

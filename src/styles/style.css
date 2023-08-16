@@ -11,19 +11,26 @@
 }
 
 .cell{
-    border: solid black
+    border: solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .ship{
-    background-color: blue;
+    background-color: green;
 }
 
 .hit{
-    background-color: red;
+    background-color: yellow;
 }
 
 .hit.ship{
-    background-color: blueviolet;
+    background-color: red;
+}
+
+.hit.ship:after{
+    content: 'X'
 }
 
 .sunk{

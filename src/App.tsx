@@ -13,22 +13,23 @@ function App() {
     "start" as "start" | "playing" | "end"
   );
   const [shipDirection, setshipDirection] = useState("x" as "x" | "y");
+  const [logMessages, setLogMessages] = useState(game.log);
 
   function handleRotateButtonClick() {
     shipDirection == "x" ? setshipDirection("y") : setshipDirection("x");
   }
 
   useLayoutEffect(() => {
-    if (!isPlayerTurn){
-      return
+    if (!isPlayerTurn) {
+      return;
     }
-    let end = game.checkEnd()
-    if (!end){
-      return
+    let end = game.checkEnd();
+    if (!end) {
+      return;
     }
-    setPromptText(end)
-    setGameStage('end')
-  })
+    setPromptText(end);
+    setGameStage("end");
+  });
 
   return (
     <>
@@ -37,25 +38,9 @@ function App() {
         <button onClick={handleRotateButtonClick}>Rotate</button>
       )}
       <div className="boards-container">
-      <div className="player-board">
-        <h2>Player Board</h2>
         <Board
-        self={true}
-        player={game.p1}
-        isPlayerTurn={isPlayerTurn}
-        setIsPlayerTurn={setIsPlayerTurn}
-        setPromptText={setPromptText}
-        gameStage={gameStage}
-        setGameStage={setGameStage}
-        shipDirection={shipDirection}
-      />
-      </div>
-      {gameStage === "start" ? null : (
-        <div className="enemy-board">
-          <h2>Enemy Board</h2>
-                  <Board
-          self={false}
-          player={game.p2}
+          self={true}
+          player={game.p1}
           isPlayerTurn={isPlayerTurn}
           setIsPlayerTurn={setIsPlayerTurn}
           setPromptText={setPromptText}
@@ -63,11 +48,18 @@ function App() {
           setGameStage={setGameStage}
           shipDirection={shipDirection}
         />
-        </div>
-
-      )}
-
-
+        {gameStage === "start" ? null : (
+          <Board
+            self={false}
+            player={game.p2}
+            isPlayerTurn={isPlayerTurn}
+            setIsPlayerTurn={setIsPlayerTurn}
+            setPromptText={setPromptText}
+            gameStage={gameStage}
+            setGameStage={setGameStage}
+            shipDirection={shipDirection}
+          />
+        )}
       </div>
     </>
   );

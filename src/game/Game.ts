@@ -4,6 +4,7 @@ export default class Game {
   readonly p1 = new Player();
   readonly p2 = new AiPlayer();
   turn = 0
+  log: string[] = []
 
   placeP2Ships() {
     return this.p2.placeShipsRandomly();
