@@ -8,10 +8,12 @@ interface CellProps {
   self: boolean;
   isPlayerTurn: boolean;
   setIsPlayerTurn: Dispatch<SetStateAction<boolean>>;
-  setPromptText: Dispatch<SetStateAction<string>>;
+  setLogMessages: Dispatch<SetStateAction<string[]>>;
+  gameLog: string[];
   gameStage: "start" | "playing" | "end";
   setGameStage: Dispatch<SetStateAction<"start" | "playing" | "end">>;
   shipDirection: "x" | "y";
+  logMessages: string[];
 }
 
 function Cell({
@@ -21,10 +23,12 @@ function Cell({
   self,
   isPlayerTurn,
   setIsPlayerTurn,
-  setPromptText,
+  setLogMessages,
+  gameLog,
   gameStage,
   setGameStage,
   shipDirection,
+  logMessages,
 }: CellProps) {
   const [cellClass, setCellClass] = useState("");
 
@@ -68,14 +72,15 @@ function Cell({
           let ship = player.placeNext();
           player.getBoard().placeShip(ship!, x, y, shipDirection);
           if (player.placeNext()) {
-            setPromptText(
-              `place your ${player.placeNext()!.getName()} ${
-                shipDirection == "x" ? "horizontal" : "vertical"
-              }ly`
-            );
+            let message = `place your ${player.placeNext()!.getName()} ${
+              shipDirection == "x" ? "horizontal" : "vertical"
+            }ly`;
+            gameLog.push(message);
+            setLogMessages([...logMessages, message]);
           } else {
             setGameStage("playing");
-            setPromptText("Attack now!");
+            gameLog.push("Attack Now!");
+            setLogMessages([...logMessages, "Attack Now!"]);
           }
           break;
       }

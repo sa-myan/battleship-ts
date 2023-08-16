@@ -1,19 +1,18 @@
 import { useLayoutEffect, useState } from "react";
 import Board from "./components/Board";
 import Game from "./game/Game";
-import Prompt from "./components/Prompt";
+import Log from "./components/Log";
 import "./styles/style.css";
 
 const game = new Game();
 
 function App() {
   const [isPlayerTurn, setIsPlayerTurn] = useState(true);
-  const [promptText, setPromptText] = useState("Prepare for battle");
   const [gameStage, setGameStage] = useState(
     "start" as "start" | "playing" | "end"
   );
   const [shipDirection, setshipDirection] = useState("x" as "x" | "y");
-  const [logMessages, setLogMessages] = useState(game.log);
+  const [logMessages, setLogMessages] = useState([] as string[]);
 
   function handleRotateButtonClick() {
     shipDirection == "x" ? setshipDirection("y") : setshipDirection("x");
@@ -23,30 +22,32 @@ function App() {
     if (!isPlayerTurn) {
       return;
     }
+    if (gameStage !== 'playing'){
+      return
+    }
     let end = game.checkEnd();
     if (!end) {
       return;
     }
-    setPromptText(end);
+    setLogMessages([...logMessages, end]);
+    game.log.push(end);
     setGameStage("end");
   });
 
   return (
-    <>
-      <Prompt promptText={promptText} setPromptText={setPromptText} />
-      {gameStage !== "start" ? null : (
-        <button onClick={handleRotateButtonClick}>Rotate</button>
-      )}
+    <div className="app">
       <div className="boards-container">
         <Board
           self={true}
           player={game.p1}
           isPlayerTurn={isPlayerTurn}
           setIsPlayerTurn={setIsPlayerTurn}
-          setPromptText={setPromptText}
           gameStage={gameStage}
           setGameStage={setGameStage}
           shipDirection={shipDirection}
+          setLogMessages={setLogMessages}
+          logMessages={logMessages}
+          gameLog={game.log}
         />
         {gameStage === "start" ? null : (
           <Board
@@ -54,14 +55,21 @@ function App() {
             player={game.p2}
             isPlayerTurn={isPlayerTurn}
             setIsPlayerTurn={setIsPlayerTurn}
-            setPromptText={setPromptText}
             gameStage={gameStage}
             setGameStage={setGameStage}
             shipDirection={shipDirection}
+            setLogMessages={setLogMessages}
+            logMessages={logMessages}
+            gameLog={game.log}
           />
         )}
+        {gameStage !== "start" ? null : (
+          <button onClick={handleRotateButtonClick}>Rotate Ship</button>
+        )}
       </div>
-    </>
+
+      <Log logMessages={logMessages} />
+    </div>
   );
 }
 

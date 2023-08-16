@@ -1,3 +1,14 @@
+*{
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+}
+
+html, body{ 
+    min-height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+  }
+
 .boards-container{
     display: flex;
     gap: 30px
@@ -35,4 +46,13 @@
 
 .sunk{
     background-color: gray !important;
+}
+
+.top-message{
+    font-weight: bold;
+}
+
+.log{
+    overflow: scroll;
+    max-height: 40vh;
 }

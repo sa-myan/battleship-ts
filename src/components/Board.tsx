@@ -7,10 +7,12 @@ interface BoardProps {
   self: boolean;
   isPlayerTurn: boolean;
   setIsPlayerTurn: Dispatch<SetStateAction<boolean>>;
-  setPromptText: Dispatch<SetStateAction<string>>;
+  setLogMessages: Dispatch<SetStateAction<string[]>>;
   gameStage: "start" | "playing" | "end";
   setGameStage: Dispatch<SetStateAction<"start" | "playing" | "end">>;
   shipDirection: "x" | "y";
+  gameLog: string[];
+  logMessages: string[];
 }
 
 function Board({
@@ -18,10 +20,12 @@ function Board({
   self,
   isPlayerTurn,
   setIsPlayerTurn,
-  setPromptText,
+  setLogMessages,
   gameStage,
   setGameStage,
   shipDirection,
+  gameLog,
+  logMessages,
 }: BoardProps) {
   // place enemy ships
   useEffect(() => {
@@ -30,16 +34,16 @@ function Board({
     }
   }, []);
 
-  // prompt for ship placement
+  // initial prompt for ship placement
   useLayoutEffect(() => {
     switch (gameStage) {
       case "start":
         if (self) {
-          setPromptText(
-            `place your ${player.placeNext()!.getName()} ${
-              shipDirection === "x" ? "horizontal" : "vertical"
-            }ly`
-          );
+          let message = `place your ${player.placeNext()!.getName()} ${
+            shipDirection === "x" ? "horizontal" : "vertical"
+          }ly`;
+          gameLog.push(message);
+          setLogMessages([...logMessages, message]);
         }
         break;
     }
@@ -54,35 +58,36 @@ function Board({
 
   return (
     <div className="board-container">
-        <h2>{player.getName()}'s board</h2>
-    <div className="board">
-      {player
-        .getBoard()
-        .getBoard()
-        .map((row, x) => {
-          return row.map((_, y) => {
-            return (
-              <Cell
-                key={x.toString() + y.toString()}
-                // workaround until proper fix -_-
-                // oversight
-                x={y + 1}
-                y={x + 1}
-                player={player}
-                self={self}
-                isPlayerTurn={isPlayerTurn}
-                setIsPlayerTurn={setIsPlayerTurn}
-                setPromptText={setPromptText}
-                gameStage={gameStage}
-                setGameStage={setGameStage}
-                shipDirection={shipDirection}
-              />
-            );
-          });
-        })}
+      <h2>{player.getName()}'s board</h2>
+      <div className="board">
+        {player
+          .getBoard()
+          .getBoard()
+          .slice()
+          .reverse()
+          .map((row, y) => {
+            return row.map((_, x) => {
+              return (
+                <Cell
+                  key={x.toString() + y.toString()}
+                  x={x+1}
+                  y={y+1}
+                  player={player}
+                  self={self}
+                  isPlayerTurn={isPlayerTurn}
+                  setIsPlayerTurn={setIsPlayerTurn}
+                  setLogMessages={setLogMessages}
+                  logMessages={logMessages}
+                  gameLog={gameLog}
+                  gameStage={gameStage}
+                  setGameStage={setGameStage}
+                  shipDirection={shipDirection}
+                />
+              );
+            });
+          })}
+      </div>
     </div>
-    </div>
-
   );
 }
 
