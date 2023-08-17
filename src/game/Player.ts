@@ -31,15 +31,17 @@ export class Player {
 
   attack(x?: number, y?: number) {
     if (!this.#Enemy) {
-      return false;
+      return null;
     }
     if (x !== undefined && y !== undefined) {
       if (x < 1 || x > 10 || y < 1 || y > 10) {
-        return false;
+        return null;
       }
-      return this.getEnemy()!.getBoard().receiveAttack(x, y);
+       if (this.getEnemy()!.getBoard().receiveAttack(x, y)){
+        return {x: x, y: y}
+       }
     }
-    return false;
+    return null;
   }
 
   placeShipsRandomly() {
@@ -80,7 +82,7 @@ export class AiPlayer extends Player {
 
   override attack() {
     if (!this.getEnemy()) {
-      return false;
+      return null;
     }
     const validMoves: [number, number][] = [];
 
@@ -93,12 +95,12 @@ export class AiPlayer extends Player {
     }
 
     if (validMoves.length < 1) {
-      return false;
+      return null;
     }
 
     const randomNumber = Math.floor(Math.random() * validMoves.length);
     const randomCell = validMoves[randomNumber];
-    super.attack(randomCell[0], randomCell[1]);
-    return true;
+    return super.attack(randomCell[0], randomCell[1]);
+   
   }
 }

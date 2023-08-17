@@ -51,7 +51,21 @@ function Board({
 
   useEffect(() => {
     if (gameStage == "playing" && !self && !isPlayerTurn) {
-      player.attack();
+      let outcome = player.attack()
+      let attackedCell = player.getEnemy()!.getBoard().getBoard(outcome!.x, outcome!.y)
+      if (attackedCell.ship){
+        let message: string
+        if(attackedCell.ship.isSunk()){
+          message = `${player.getEnemy()?.getName()}'s ${attackedCell.ship.getName()} has been SUNK!!`
+        }
+        else{
+          message = `A ship of ${player.getEnemy()?.getName()}'s has been hit!`
+
+        }
+        gameLog.push(message)
+        setLogMessages([...logMessages, message])
+      }
+
       setIsPlayerTurn(true);
     }
   }, [isPlayerTurn]);

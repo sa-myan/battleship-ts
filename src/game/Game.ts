@@ -6,10 +6,6 @@ export default class Game {
   turn = 0
   log: string[] = []
 
-  placeP2Ships() {
-    return this.p2.placeShipsRandomly();
-  }
-
   checkEnd() {
     const p1Lost = this.p1.getBoard().areAllSunk();
     const p2Lost = this.p2.getBoard().areAllSunk();
